@@ -38,9 +38,15 @@
       </a>
     </div>
 
-    <div class="bg-white rounded-xl p-4 shadow-sm">
-      <a href="{{ route('users.gate') }}" class="text-teal-900 font-semibold hover:underline">⚙️ Manage User</a>
-      <p class="text-xs text-slate-400 mt-1">Tambah/hapus user yang dapat login (perlu SHA1 hash Manage User)</p>
+    <div class="bg-white rounded-xl p-4 shadow-sm flex items-center justify-between gap-4">
+      <div>
+        <div class="text-sm text-slate-400">Tambah/hapus user yang dapat login</div>
+        <div class="text-xs text-slate-400 mt-1">Perlu SHA1 hash Manage User</div>
+      </div>
+      <a href="{{ route('users.gate') }}" class="inline-flex items-center gap-2 bg-teal-900 hover:bg-teal-800 text-white font-semibold text-sm px-4 py-2 rounded-lg transition shrink-0">
+        Manage User
+        <span aria-hidden="true">&rarr;</span>
+      </a>
     </div>
 
     <form method="POST" action="{{ route('input.logout') }}" class="mt-6">

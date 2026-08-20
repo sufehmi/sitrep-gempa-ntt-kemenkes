@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Sitrep Kesehatan — Gempa Bumi NTT</title>
+  <title>Dashboard Kesehatan - Gempa Bumi di NTT</title>
+  <link rel="icon" type="image/png" href="/images/kemenkes-logo.png">
   <style>
     html, body { margin: 0; padding: 0; min-height: 100vh; background: #EEF1F0; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #2D3D3A; }
     * { box-sizing: border-box; }
@@ -47,10 +48,6 @@
     tbody tr:hover { background: #F8FAF9; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
 
-    /* iframe */
-    .frame-16x9 { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 0 0 1rem 1rem; }
-    .frame-16x9 iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-
     /* Buttons */
     .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; transition: all 0.15s; cursor: pointer; border: 0; }
     .btn-primary { background: #1F4A44; color: #fff; }
@@ -82,33 +79,35 @@
 </head>
 <body>
 
-  {{-- ====== HEADER (dark teal banner + tabs) ====== --}}
+  {{-- ====== HEADER (dark teal banner + tabs + logo) ====== --}}
   <header class="bg-teal-900 text-white">
     <div class="max-w-7xl mx-auto px-6 lg:px-8 pt-6 pb-2">
-      <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-white/70 mb-3">
-        <span>♥</span>
-        <span>Data Dianalisis dari Laporan Puskris Kemenkes RI</span>
+      <div class="flex items-center justify-between gap-4 mb-3">
+        <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-white/70">
+          <span>♥</span>
+          <span>Data Dianalisis dari Laporan Puskris Kemenkes RI</span>
+        </div>
+        <a href="https://www.kemkes.go.id" target="_blank" rel="noopener" class="shrink-0">
+          <img src="/images/kemenkes-logo.png" alt="Kementerian Kesehatan RI" class="h-12 md:h-16 w-auto" />
+        </a>
       </div>
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <h1 id="top" class="text-2xl md:text-3xl font-semibold leading-tight">
-          Sitrep Kesehatan — Gempa Bumi NTT
+          Dashboard Kesehatan - Gempa Bumi di NTT
         </h1>
         <div class="text-right text-sm">
           <div class="text-white/60 text-xs uppercase tracking-wider">Data termutakhir</div>
           <div class="font-medium">18 Agustus 2026</div>
-          <div class="text-white/70 text-xs">17.00 WIB (populasi); 11.00 WIB (triase RS &amp; Puskesmas)</div>
         </div>
       </div>
     </div>
     <nav class="max-w-7xl mx-auto px-6 lg:px-8 pb-4">
       <ul class="tab-scroll flex items-center gap-1.5 min-w-min">
-        <li><a class="tab-pill active" href="#ringkasan">Untuk Pemangku Kebijakan</a></li>
-        <li><a class="tab-pill" href="#analisa">Ringkasan Data</a></li>
-        <li><a class="tab-pill" href="#fasyankes">Fasyankes</a></li>
-        <li><a class="tab-pill" href="#sitrep">SitRep</a></li>
-        <li><a class="tab-pill" href="#data-studio">Data Studio</a></li>
-        <li><a class="tab-pill" href="#linktree">Linktree</a></li>
-        <li><a class="tab-pill" href="#input-data">Input Harian</a></li>
+        <li><a class="tab-pill active" href="#analisa">Analisa Harian</a></li>
+        <li><a class="tab-pill" href="#situasi">Situasi Kesehatan</a></li>
+        <li><a class="tab-pill" href="#fasyankes">Identifikasi Kondisi Pasien di Faskes</a></li>
+        <li><a class="tab-pill" href="#data-studio">Tim Pendukung Kesehatan</a></li>
+        <li><a class="tab-pill" href="#linktree">Informasi lainnya</a></li>
       </ul>
     </nav>
   </header>
@@ -116,94 +115,11 @@
   <main class="max-w-7xl mx-auto px-6 lg:px-8 py-8 space-y-6">
 
     {{-- ============================================================ --}}
-    {{-- TAB 1: Ringkasan (hero card + KPI + prioritas)                --}}
-    {{-- ============================================================ --}}
-    <section id="ringkasan" class="section-anchor space-y-6">
-
-      {{-- Hero / status card --}}
-      <div class="bg-teal-900 text-white rounded-2xl p-6 lg:p-8 shadow-sm">
-        <h2 class="text-lg md:text-xl font-semibold leading-snug mb-3">
-          1 rumah sakit di 1 kabupaten masih belum beroperasi penuh.
-          <span class="text-coral-500 font-bold">7 isu prioritas tinggi</span> menunggu keputusan.
-        </h2>
-        <div class="flex flex-wrap gap-2 mt-4">
-          <span class="bg-white/10 px-3 py-1.5 rounded-full text-xs">RS belum operasional: <strong>1 → 1</strong> <span class="text-white/60">(stabil)</span></span>
-          <span class="bg-white/10 px-3 py-1.5 rounded-full text-xs">Item logistik masih gap: <strong>158 → 158</strong> <span class="text-white/60">(stabil)</span></span>
-          <span class="bg-white/10 px-3 py-1.5 rounded-full text-xs">Pengungsi (KK): <strong>6.680 → 43.113</strong> <span class="text-sage-500 font-semibold">(membaik)</span></span>
-          <a href="#analisa" class="ml-auto text-sm text-white/80 hover:text-white underline">Lihat rincian ›</a>
-        </div>
-      </div>
-
-      {{-- KPI 3-column --}}
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-coral-50 border-l-4 border-coral-500 rounded-2xl p-6">
-          <div class="text-xs uppercase tracking-wider text-coral-500 font-bold">RS Belum Operasional</div>
-          <div class="text-4xl font-bold mt-2 text-slate-800">{{ $kpi['rs_belum_operasional'] }}</div>
-          <div class="text-xs text-slate-400 mt-1">dari total 6 RS</div>
-        </div>
-        <div class="bg-coral-50 border-l-4 border-coral-500 rounded-2xl p-6">
-          <div class="text-xs uppercase tracking-wider text-coral-500 font-bold">Korban (Meninggal + Luka Berat)</div>
-          <div class="text-4xl font-bold mt-2 text-slate-800">{{ number_format($kpi['meninggal'] + $kpi['luka_berat']) }}</div>
-          <div class="text-xs text-slate-400 mt-1">Meninggal {{ $kpi['meninggal'] }} + Luka Berat {{ $kpi['luka_berat'] }}</div>
-        </div>
-        <div class="bg-amber-50 border-l-4 border-amber-500 rounded-2xl p-6">
-          <div class="text-xs uppercase tracking-wider text-amber-500 font-bold">Isu Menunggu Keputusan</div>
-          <div class="text-4xl font-bold mt-2 text-slate-800">{{ $kpi['isu_prioritas'] }}</div>
-          <div class="text-xs text-slate-400 mt-1">{{ $kpi['item_logistik_gap'] }} item logistik masih gap</div>
-        </div>
-      </div>
-
-      {{-- Prioritas list --}}
-      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-mint-200 flex items-center gap-2">
-          <span class="text-teal-900 text-lg">🛡</span>
-          <h3 class="text-base font-semibold text-slate-800">Keputusan yang Perlu Diambil</h3>
-        </div>
-        <div class="divide-y divide-mint-200">
-          @foreach($analisa->take(7) as $row)
-            <div class="px-6 py-4 flex items-start gap-4 {{ $row->status && str_contains(strtolower($row->status), 'tinggi') ? 'bg-coral-50/50' : ($row->status && str_contains(strtolower($row->status), 'sedang') ? 'bg-amber-50/50' : '') }}">
-              <span class="badge {{ $row->status && str_contains(strtolower($row->status), 'tinggi') ? 'badge-red' : 'badge-amber' }} mt-1 shrink-0">
-                {{ $row->status && str_contains(strtolower($row->status), 'tinggi') ? 'Tinggi' : 'Sedang' }}
-              </span>
-              <div class="flex-1 min-w-0">
-                <div class="font-semibold text-slate-800">{{ $row->kabupaten->nama_kabupaten }} — {{ $row->pola_gap ?: 'Verifikasi data diperlukan' }}</div>
-                <div class="text-sm text-slate-400 mt-0.5">{{ $row->tindak_lanjut ?: 'Belum ada tindak lanjut' }}</div>
-                <span class="text-xs text-slate-300 mt-1 inline-block">Fasyankes</span>
-              </div>
-              <span class="text-slate-300 text-lg">›</span>
-            </div>
-          @endforeach
-        </div>
-        <div class="px-6 py-3 text-center border-t border-mint-200 text-sm text-slate-400">
-          +5 isu lain, prioritas sedang/rendah
-        </div>
-      </div>
-
-      {{-- Yang sudah dikerjakan --}}
-      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-mint-200 flex items-center gap-2">
-          <span class="text-sage-500 text-lg">✓</span>
-          <h3 class="text-base font-semibold text-slate-800">Yang Sudah Dikerjakan</h3>
-        </div>
-        <div class="divide-y divide-mint-200">
-          <div class="px-6 py-3 flex items-center gap-3"><span class="text-sage-500">●</span> Pendataan 7 kabupaten terdampak selesai</div>
-          <div class="px-6 py-3 flex items-center gap-3"><span class="text-sage-500">●</span> 6 RS triase dilakukan</div>
-          <div class="px-6 py-3 flex items-center gap-3"><span class="text-sage-500">●</span> 12 puskesmas triase dilakukan</div>
-          <div class="px-6 py-3 flex items-center gap-3"><span class="text-sage-500">●</span> Data import dari Excel Puskris Kemenkes RI</div>
-        </div>
-      </div>
-
-      <a href="#analisa" class="btn btn-ghost">Lihat seluruh data operasional ›</a>
-      <a href="#top" class="btn btn-ghost float-right">↑ Kembali ke atas</a>
-      <div class="clear-both"></div>
-    </section>
-
-    {{-- ============================================================ --}}
-    {{-- TAB 2: Analisa Ringkasan (7 kabupaten)                       --}}
+    {{-- TAB 1: Analisa Harian (7 kabupaten)                          --}}
     {{-- ============================================================ --}}
     <section id="analisa" class="section-anchor space-y-4">
       <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">📋 Ringkasan Data — Analisa Per Kabupaten</h3>
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Analisa Harian Per Kabupaten</h3>
         <div class="overflow-x-auto">
           <table>
             <thead>
@@ -216,7 +132,6 @@
                 <th class="num">Total Fasyankes</th>
                 <th>Pola Gap</th>
                 <th>Status</th>
-                <th>Tindak Lanjut</th>
               </tr>
             </thead>
             <tbody>
@@ -230,10 +145,9 @@
                   <td class="num font-semibold">{{ number_format($row->total_pasien) }}</td>
                   <td><span class="text-xs text-slate-400">{{ Str::limit($row->pola_gap, 50) }}</span></td>
                   <td>{{ $row->status }}</td>
-                  <td><span class="text-xs text-slate-400">{{ Str::limit($row->tindak_lanjut, 60) }}</span></td>
                 </tr>
               @empty
-                <tr><td colspan="9" class="text-center text-slate-400">Belum ada data analisa.</td></tr>
+                <tr><td colspan="8" class="text-center text-slate-400">Belum ada data analisa.</td></tr>
               @endforelse
             </tbody>
           </table>
@@ -243,95 +157,11 @@
     </section>
 
     {{-- ============================================================ --}}
-    {{-- TAB 3: Fasyankes (RS + Puskesmas)                            --}}
+    {{-- TAB 2: Situasi Kesehatan (7 kabupaten)                       --}}
     {{-- ============================================================ --}}
-    <section id="fasyankes" class="section-anchor space-y-4">
+    <section id="situasi" class="section-anchor space-y-4">
       <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">🏥 Rumah Sakit</h3>
-        <div class="overflow-x-auto">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Kabupaten</th>
-                <th>Nama RS</th>
-                <th class="num t-merah">Merah</th>
-                <th class="num t-kuning">Kuning</th>
-                <th class="num t-hijau">Hijau</th>
-                <th class="num t-hitam">Hitam</th>
-                <th class="num">Total</th>
-                <th>Sumber</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse($rs as $row)
-                <tr>
-                  <td>{{ $row->tanggal->format('Y-m-d') }}</td>
-                  <td>{{ $row->kabupaten->nama_kabupaten }}</td>
-                  <td><strong>{{ $row->nama_rs }}</strong></td>
-                  <td class="num t-merah font-bold">{{ $row->merah }}</td>
-                  <td class="num t-kuning">{{ $row->kuning }}</td>
-                  <td class="num t-hijau">{{ $row->hijau }}</td>
-                  <td class="num t-hitam">{{ $row->hitam }}</td>
-                  <td class="num font-semibold">{{ $row->total_pasien }}</td>
-                  <td><span class="text-xs text-slate-400">{{ $row->sumber_data }}</span></td>
-                </tr>
-              @empty
-                <tr><td colspan="9" class="text-center text-slate-400">Belum ada data RS.</td></tr>
-              @endforelse
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">⚕️ Puskesmas</h3>
-        <div class="overflow-x-auto">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Kabupaten</th>
-                <th>Nama Puskesmas</th>
-                <th class="num t-merah">Merah</th>
-                <th class="num t-kuning">Kuning</th>
-                <th class="num t-hijau">Hijau</th>
-                <th class="num t-hitam">Hitam</th>
-                <th class="num">Total</th>
-                <th>Diagnosis/Catatan</th>
-                <th>Sumber</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse($puskesmas as $row)
-                <tr>
-                  <td>{{ $row->tanggal->format('Y-m-d') }}</td>
-                  <td>{{ $row->kabupaten->nama_kabupaten }}</td>
-                  <td><strong>{{ $row->nama_puskesmas }}</strong></td>
-                  <td class="num t-merah font-bold">{{ $row->merah }}</td>
-                  <td class="num t-kuning">{{ $row->kuning }}</td>
-                  <td class="num t-hijau">{{ $row->hijau }}</td>
-                  <td class="num t-hitam">{{ $row->hitam }}</td>
-                  <td class="num font-semibold">{{ $row->total_pasien }}</td>
-                  <td><span class="text-xs text-slate-400">{{ Str::limit($row->diagnosis, 50) }}</span></td>
-                  <td><span class="text-xs text-slate-400">{{ $row->sumber_data }}</span></td>
-                </tr>
-              @empty
-                <tr><td colspan="10" class="text-center text-slate-400">Belum ada data puskesmas.</td></tr>
-              @endforelse
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <a href="#top" class="btn btn-ghost">↑ Kembali ke atas</a>
-    </section>
-
-    {{-- ============================================================ --}}
-    {{-- TAB 4: SitRep (tabel situasi 7 kab)                          --}}
-    {{-- ============================================================ --}}
-    <section id="sitrep" class="section-anchor space-y-4">
-      <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">📈 SitRep — Situasi Kesehatan &amp; Populasi Terdampak</h3>
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Situasi Kesehatan &amp; Populasi Terdampak</h3>
         <div class="overflow-x-auto">
           <table>
             <thead>
@@ -345,7 +175,6 @@
                 <th class="num">Luka Ringan</th>
                 <th class="num">Pengungsi</th>
                 <th class="num">Titik Pengungsian</th>
-                <th>Sumber</th>
               </tr>
             </thead>
             <tbody>
@@ -360,10 +189,9 @@
                   <td class="num">{{ number_format($row->luka_ringan) }}</td>
                   <td class="num">{{ number_format($row->pengungsi) }}</td>
                   <td class="num">{{ number_format($row->titik_pengungsian) }}</td>
-                  <td><span class="text-xs text-slate-400">{{ $row->sumber_data }}</span></td>
                 </tr>
               @empty
-                <tr><td colspan="10" class="text-center text-slate-400">Belum ada data situasi.</td></tr>
+                <tr><td colspan="9" class="text-center text-slate-400">Belum ada data situasi.</td></tr>
               @endforelse
             </tbody>
             @if($situasi->count() > 0)
@@ -376,57 +204,126 @@
                   <td class="num">{{ number_format($situasi->sum('luka_ringan')) }}</td>
                   <td class="num">{{ number_format($situasi->sum('pengungsi')) }}</td>
                   <td class="num">{{ number_format($situasi->sum('titik_pengungsian')) }}</td>
-                  <td></td>
                 </tr>
               </tfoot>
             @endif
           </table>
         </div>
       </div>
+      <a href="#top" class="btn btn-ghost">↑ Kembali ke atas</a>
+    </section>
 
-      {{-- Logistik & SDM placeholder (sesuai referensi) --}}
+    {{-- ============================================================ --}}
+    {{-- TAB 3: Identifikasi Kondisi Pasien di Faskes (RS + PKM)     --}}
+    {{-- ============================================================ --}}
+    <section id="fasyankes" class="section-anchor space-y-4">
       <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">📦 Logistik &amp; SDM</h3>
-        <p class="text-slate-400 text-sm">Data logistik dan SDM akan ditambahkan sesuai kebutuhan operasional.</p>
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div class="bg-amber-50 rounded-xl p-4 border-l-4 border-amber-500">
-            <div class="text-xs uppercase tracking-wider text-amber-500 font-bold">Item Logistik Gap</div>
-            <div class="text-2xl font-bold mt-1 text-slate-800">{{ $kpi['item_logistik_gap'] }}</div>
-            <div class="text-xs text-slate-400 mt-1">Item yang masih kurang di lapangan</div>
-          </div>
-          <div class="bg-sage-50 rounded-xl p-4 border-l-4 border-sage-500">
-            <div class="text-xs uppercase tracking-wider text-sage-500 font-bold">Total Fasyankes</div>
-            <div class="text-2xl font-bold mt-1 text-slate-800">{{ $kpi['total_pasien'] }}</div>
-            <div class="text-xs text-slate-400 mt-1">RS + Puskesmas yang beroperasi</div>
-          </div>
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Identifikasi Kondisi Pasien di Rumah Sakit</h3>
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Kabupaten</th>
+                <th>Nama RS</th>
+                <th class="num t-merah">Merah</th>
+                <th class="num t-kuning">Kuning</th>
+                <th class="num t-hijau">Hijau</th>
+                <th class="num t-hitam">Hitam</th>
+                <th class="num">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($rs as $row)
+                <tr>
+                  <td>{{ $row->tanggal->format('Y-m-d') }}</td>
+                  <td>{{ $row->kabupaten->nama_kabupaten }}</td>
+                  <td><strong>{{ $row->nama_rs }}</strong></td>
+                  <td class="num t-merah font-bold">{{ $row->merah }}</td>
+                  <td class="num t-kuning">{{ $row->kuning }}</td>
+                  <td class="num t-hijau">{{ $row->hijau }}</td>
+                  <td class="num t-hitam">{{ $row->hitam }}</td>
+                  <td class="num font-semibold">{{ $row->total_pasien }}</td>
+                </tr>
+              @empty
+                <tr><td colspan="8" class="text-center text-slate-400">Belum ada data RS.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Identifikasi Kondisi Pasien di Puskesmas</h3>
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Kabupaten</th>
+                <th>Nama Puskesmas</th>
+                <th class="num t-merah">Merah</th>
+                <th class="num t-kuning">Kuning</th>
+                <th class="num t-hijau">Hijau</th>
+                <th class="num t-hitam">Hitam</th>
+                <th class="num">Total</th>
+                <th>Diagnosis/Catatan</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($puskesmas as $row)
+                <tr>
+                  <td>{{ $row->tanggal->format('Y-m-d') }}</td>
+                  <td>{{ $row->kabupaten->nama_kabupaten }}</td>
+                  <td><strong>{{ $row->nama_puskesmas }}</strong></td>
+                  <td class="num t-merah font-bold">{{ $row->merah }}</td>
+                  <td class="num t-kuning">{{ $row->kuning }}</td>
+                  <td class="num t-hijau">{{ $row->hijau }}</td>
+                  <td class="num t-hitam">{{ $row->hitam }}</td>
+                  <td class="num font-semibold">{{ $row->total_pasien }}</td>
+                  <td><span class="text-xs text-slate-400">{{ Str::limit($row->diagnosis, 50) }}</span></td>
+                </tr>
+              @empty
+                <tr><td colspan="9" class="text-center text-slate-400">Belum ada data puskesmas.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
         </div>
       </div>
       <a href="#top" class="btn btn-ghost">↑ Kembali ke atas</a>
     </section>
 
     {{-- ============================================================ --}}
-    {{-- TAB 5: Google Data Studio                                     --}}
+    {{-- TAB 4: Tim Pendukung Kesehatan (Google Data Studio)          --}}
     {{-- ============================================================ --}}
     <section id="data-studio" class="section-anchor">
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-mint-200 flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-slate-800">📊 Google Data Studio — Visualisasi Lengkap</h3>
-          <a href="https://datastudio.google.com/u/0/reporting/35badcdd-7dd0-4208-9bc5-573007f8b8eb/page/Rkk6F" target="_blank" class="text-sm text-teal-900 hover:underline">Buka di Tab Baru ↗</a>
+          <h3 class="text-lg font-semibold text-slate-800">Tim Pendukung Kesehatan</h3>
+          <a href="https://datastudio.google.com/u/0/reporting/35badcdd-7dd0-4208-9bc5-573007f8b8eb/page/Rkk6F" target="_blank" rel="noopener" class="text-sm text-teal-900 hover:underline">Buka di Tab Baru ↗</a>
         </div>
-        <div class="frame-16x9" style="min-height:75vh;">
-          <iframe src="https://datastudio.google.com/embed/reporting/35badcdd-7dd0-4208-9bc5-573007f8b8eb/page/Rkk6F" allowfullscreen></iframe>
+        <div class="p-6">
+          <div class="relative w-full overflow-hidden rounded-lg bg-mint-50" style="aspect-ratio: 600 / 443;">
+            <iframe
+              src="https://datastudio.google.com/embed/reporting/35badcdd-7dd0-4208-9bc5-573007f8b8eb/page/Rkk6F"
+              class="absolute inset-0 w-full h-full"
+              style="border:0;"
+              allowfullscreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+              title="Tim Pendukung Kesehatan"></iframe>
+          </div>
         </div>
       </div>
       <a href="#top" class="btn btn-ghost mt-4">↑ Kembali ke atas</a>
     </section>
 
     {{-- ============================================================ --}}
-    {{-- TAB 6: Linktree                                              --}}
+    {{-- TAB 5: Informasi lainnya (Linktree + API Docs)              --}}
     {{-- ============================================================ --}}
     <section id="linktree" class="section-anchor">
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-mint-200 flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-slate-800">🔗 Linktree — Sitrep NTT</h3>
+          <h3 class="text-lg font-semibold text-slate-800">Informasi lainnya</h3>
         </div>
         <div class="px-6 py-8 text-center">
           <p class="text-slate-600 mb-4">Kumpulan tautan resmi Sitrep Gempa NTT.</p>
@@ -448,37 +345,12 @@
       <a href="#top" class="btn btn-ghost mt-4">↑ Kembali ke atas</a>
     </section>
 
-    {{-- ============================================================ --}}
-    {{-- TAB 7: Input Data                                            --}}
-    {{-- ============================================================ --}}
-    <section id="input-data" class="section-anchor">
-      <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">Input Data</h3>
-        @auth
-          <p class="text-sm text-slate-600 mb-4">
-            Login sebagai: <strong>{{ auth()->user()->username }}</strong>
-            ({{ auth()->user()->name ?? '-' }})
-            <form method="POST" action="{{ route('input.logout') }}" class="inline ml-2">
-              @csrf
-              <button type="submit" class="text-coral-500 hover:underline text-sm">Logout</button>
-            </form>
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            <a href="{{ route('input.analisa') }}" class="btn btn-primary">Analisa Ringkasan</a>
-            <a href="{{ route('input.situasi') }}" class="btn btn-primary">Situasi Kesehatan</a>
-            <a href="{{ route('input.rs') }}" class="btn btn-primary">Data RS</a>
-            <a href="{{ route('input.puskesmas') }}" class="btn btn-primary">Data Puskesmas</a>
-          </div>
-          <div class="mt-6 pt-4 border-t border-mint-200">
-            <a href="{{ route('users.gate') }}" class="btn btn-ghost border border-teal-900">Manage User</a>
-          </div>
-        @else
-          <p class="text-sm text-slate-600 mb-4">Anda belum login. Silakan login untuk mengakses fitur input data.</p>
-          <a href="{{ route('input.login') }}" class="btn btn-primary">Login</a>
-        @endauth
-      </div>
-      <a href="#top" class="btn btn-ghost mt-4">↑ Kembali ke atas</a>
-    </section>
+    <div class="flex justify-center pt-4">
+      <a href="{{ route('input.login') }}" class="inline-flex items-center gap-2 bg-teal-900 hover:bg-teal-800 text-white font-semibold text-sm px-6 py-3 rounded-lg transition shadow-sm">
+        Input Data
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
 
   </main>
 
@@ -490,7 +362,7 @@
 
   <script>
     // Highlight active tab on scroll
-    const sections = ['ringkasan','analisa','fasyankes','sitrep','data-studio','linktree','input-data'];
+    const sections = ['analisa','situasi','fasyankes','data-studio','linktree'];
     document.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(id => {
