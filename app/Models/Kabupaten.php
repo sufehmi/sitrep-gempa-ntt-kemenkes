@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Kabupaten extends Model
 {
     protected $table = 'kabupaten';
-    protected $fillable = ['nama_kabupaten'];
+    protected $fillable = ['nama_kabupaten', 'latitude', 'longitude'];
+
+    protected $casts = [
+        'latitude'  => 'float',
+        'longitude' => 'float',
+    ];
 
     public function analisa(): HasMany
     {

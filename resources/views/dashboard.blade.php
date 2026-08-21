@@ -6,6 +6,8 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Dashboard Kesehatan - Gempa Bumi di NTT</title>
   <link rel="icon" type="image/png" href="/images/kemenkes-logo.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
     html, body { margin: 0; padding: 0; min-height: 100vh; background: #EEF1F0; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #2D3D3A; }
     * { box-sizing: border-box; }
@@ -97,7 +99,7 @@
         </h1>
         <div class="text-right text-sm">
           <div class="text-white/60 text-xs uppercase tracking-wider">Data termutakhir</div>
-          <div class="font-medium">18 Agustus 2026</div>
+          <div class="font-medium">20 Agustus 2026</div>
         </div>
       </div>
     </div>
@@ -105,7 +107,8 @@
       <ul class="tab-scroll flex items-center gap-1.5 min-w-min">
         <li><a class="tab-pill active" href="#analisa">Analisa Harian</a></li>
         <li><a class="tab-pill" href="#situasi">Situasi Kesehatan</a></li>
-        <li><a class="tab-pill" href="#fasyankes">Identifikasi Kondisi Pasien di Faskes</a></li>
+        <li><a class="tab-pill" href="#pasien-rs">Pasien di Rumah Sakit</a></li>
+        <li><a class="tab-pill" href="#pasien-puskesmas">Pasien di Puskesmas</a></li>
         <li><a class="tab-pill" href="#data-studio">Tim Pendukung Kesehatan</a></li>
         <li><a class="tab-pill" href="#linktree">Informasi lainnya</a></li>
       </ul>
@@ -118,8 +121,23 @@
     {{-- TAB 1: Analisa Harian (7 kabupaten)                          --}}
     {{-- ============================================================ --}}
     <section id="analisa" class="section-anchor space-y-4">
+      {{-- PETA SEBARAN KABUPATEN --}}
       <div class="bg-white rounded-2xl shadow-sm p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">Analisa Harian Per Kabupaten</h3>
+        <div class="flex items-start justify-between gap-3 mb-3 flex-wrap">
+          <h3 class="text-lg font-semibold text-slate-800">Peta Sebaran 7 Kabupaten Terdampak</h3>
+          <a href="#analisa-tabel" class="text-sm text-teal-900 hover:underline">↓ Lihat tabel analisa</a>
+        </div>
+        <div id="map-peta" class="rounded-xl overflow-hidden border border-slate-200" style="height: 480px; background: #e7ecf1;"></div>
+        <div class="flex items-center gap-4 mt-3 text-xs text-slate-600 flex-wrap">
+          <span class="font-semibold text-slate-700">Legenda (per kabupaten):</span>
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-full" style="background: #2563eb;"></span>Korban Luka</span>
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-full" style="background: #92400e;"></span>Pasien RS</span>
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-full" style="background: #64748b;"></span>Pasien PKM</span>
+        </div>
+      </div>
+
+      <div id="analisa-tabel" class="bg-white rounded-2xl shadow-sm p-6">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Analisa Ringkasan Harian</h3>
         <div class="overflow-x-auto">
           <table>
             <thead>
@@ -130,8 +148,6 @@
                 <th class="num">Pasien RS</th>
                 <th class="num">Pasien PKM</th>
                 <th class="num">Total Fasyankes</th>
-                <th>Pola Gap</th>
-                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -143,11 +159,9 @@
                   <td class="num">{{ number_format($row->pasien_rs) }}</td>
                   <td class="num">{{ number_format($row->pasien_puskesmas) }}</td>
                   <td class="num font-semibold">{{ number_format($row->total_pasien) }}</td>
-                  <td><span class="text-xs text-slate-400">{{ Str::limit($row->pola_gap, 50) }}</span></td>
-                  <td>{{ $row->status }}</td>
                 </tr>
               @empty
-                <tr><td colspan="8" class="text-center text-slate-400">Belum ada data analisa.</td></tr>
+                <tr><td colspan="6" class="text-center text-slate-400">Belum ada data analisa.</td></tr>
               @endforelse
             </tbody>
           </table>
@@ -216,7 +230,7 @@
     {{-- ============================================================ --}}
     {{-- TAB 3: Identifikasi Kondisi Pasien di Faskes (RS + PKM)     --}}
     {{-- ============================================================ --}}
-    <section id="fasyankes" class="section-anchor space-y-4">
+    <section id="pasien-rs" class="section-anchor space-y-4">
       <div class="bg-white rounded-2xl shadow-sm p-6">
         <h3 class="text-lg font-semibold text-slate-800 mb-4">Identifikasi Kondisi Pasien di Rumah Sakit</h3>
         <div class="overflow-x-auto">
@@ -252,7 +266,12 @@
           </table>
         </div>
       </div>
+    </section>
 
+    {{-- ============================================================ --}}
+    {{-- TAB 4: Pasien di Puskesmas                                   --}}
+    {{-- ============================================================ --}}
+    <section id="pasien-puskesmas" class="section-anchor space-y-4">
       <div class="bg-white rounded-2xl shadow-sm p-6">
         <h3 class="text-lg font-semibold text-slate-800 mb-4">Identifikasi Kondisi Pasien di Puskesmas</h3>
         <div class="overflow-x-auto">
@@ -360,9 +379,11 @@
     <p class="text-slate-400 pt-2">© 2026 Sitrep NTT — Dashboard dibuat dengan Laravel + Tailwind CSS</p>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     // Highlight active tab on scroll
-    const sections = ['analisa','situasi','fasyankes','data-studio','linktree'];
+    const sections = ['analisa','situasi','pasien-rs','pasien-puskesmas','data-studio','linktree'];
     document.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(id => {
@@ -374,5 +395,162 @@
       });
     });
   </script>
+
+  <script>
+    // PETA SEBARAN 7 KABUPATEN
+    (function() {
+      const mapEl = document.getElementById('map-peta');
+      if (!mapEl) return;
+
+      const data = @json($mapData);
+      if (!data || data.length === 0) return;
+
+      // Inisialisasi peta, center di tengah NTT (perkiraan).
+      const map = L.map('map-peta', {
+        scrollWheelZoom: false,
+        zoomControl: true,
+      }).setView([-8.62, 121.0], 8);
+
+      // Tile layer: OpenStreetMap (standar, gratis)
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Helper: warna untuk tiap metrik
+            const COLORS = {
+              luka:  '#2563eb',  // biru
+              rs:    '#92400e',  // coklat
+              pkm:   '#64748b',  // abu-abu
+            };
+
+            // Helper: HTML mini info card per kabupaten
+            // Header: nama kabupaten
+            // Body: 3 baris [lingkaran warna] [label] [angka]
+            function makeInfoCardHtml(nama, luka, rs, pkm) {
+              const fmt = (n) => (n || 0).toLocaleString('id-ID');
+              return `
+                <div style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                  padding: 6px 10px 7px 8px;
+                  background: rgba(255, 255, 255, 0.45);
+                  -webkit-backdrop-filter: blur(8px);
+                  backdrop-filter: blur(8px);
+                  border: 1px solid rgba(255, 255, 255, 0.6);
+                  border-radius: 8px;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+                  font-family: 'Inter', sans-serif;
+                  min-width: 110px;
+                ">
+                  <div style="
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #1F4A44;
+                    line-height: 1.1;
+                    padding-bottom: 3px;
+                    margin-bottom: 2px;
+                    border-bottom: 1px solid rgba(31, 74, 68, 0.18);
+                    letter-spacing: 0.01em;
+                  ">${nama}</div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${COLORS.luka};flex-shrink:0;"></span>
+                    <span style="font-size: 10px; color: #475569; font-weight: 500; line-height: 1;">Luka</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:700;color:#1F4A44;line-height:1;">${fmt(luka)}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${COLORS.rs};flex-shrink:0;"></span>
+                    <span style="font-size: 10px; color: #475569; font-weight: 500; line-height: 1;">RS</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:700;color:#1F4A44;line-height:1;">${fmt(rs)}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${COLORS.pkm};flex-shrink:0;"></span>
+                    <span style="font-size: 10px; color: #475569; font-weight: 500; line-height: 1;">PKM</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:700;color:#1F4A44;line-height:1;">${fmt(pkm)}</span>
+                  </div>
+                </div>`;
+            }
+
+            const markers = [];
+            data.forEach(function(row) {
+              if (!row.latitude || !row.longitude) return;
+
+              const luka = Number(row.korban_luka) || 0;
+              const rs   = Number(row.pasien_rs) || 0;
+              const pkm  = Number(row.pasien_puskesmas) || 0;
+
+              const html = makeInfoCardHtml(row.nama_kabupaten, luka, rs, pkm);
+
+              // divIcon: HTML info card
+              const icon = L.divIcon({
+                className: 'peta-info-card',
+                html: html,
+                iconSize: null,           // auto-size dari konten
+                iconAnchor: [-8, 36],     // offset: pojok kiri bawah card dekat pin
+              });
+
+              const marker = L.marker([row.latitude, row.longitude], { icon: icon }).addTo(map);
+
+              // Popup dengan detail + tanggal
+              marker.bindPopup(
+                '<div style="font-family: Inter, sans-serif; min-width: 200px;">' +
+                '<div style="font-weight: 700; font-size: 14px; color: #1F4A44; margin-bottom: 4px;">' +
+                row.nama_kabupaten + '</div>' +
+                '<div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">' + row.tanggal + '</div>' +
+                '<div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #475569;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                  '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + COLORS.luka + ';margin-right:6px;"></span>Korban Luka</span>' +
+                  '<strong>' + luka + '</strong>' +
+                '</div>' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                  '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + COLORS.rs + ';margin-right:6px;"></span>Pasien RS</span>' +
+                  '<strong>' + rs + '</strong>' +
+                '</div>' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                  '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + COLORS.pkm + ';margin-right:6px;"></span>Pasien PKM</span>' +
+                  '<strong>' + pkm + '</strong>' +
+                '</div>' +
+                '<div style="border-top: 1px solid #e2e8f0; margin-top: 4px; padding-top: 4px; display: flex; justify-content: space-between; font-weight: 600; color: #1F4A44;">' +
+                  '<span>Total Fasyankes</span>' +
+                  '<span>' + (Number(row.total_pasien) || 0) + '</span>' +
+                '</div>' +
+                '</div></div>'
+              );
+
+              // (Tidak perlu bindTooltip — nama kabupaten sudah tampil di dalam card)
+
+              markers.push(marker);
+            });
+
+      // Auto-fit bounds kalau ada marker, supaya semua 7 kabupaten kelihatan.
+      if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.15));
+      }
+    })();
+  </script>
+
+  <style>
+    /* Custom Leaflet tooltip styling untuk kabupaten label */
+    .kabupaten-tooltip {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: #1F4A44;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .kabupaten-tooltip:before { display: none; }
+
+    /* Info card marker: hilangkan default Leaflet marker background */
+    .peta-info-card {
+      background: transparent !important;
+      border: none !important;
+    }
+  </style>
 </body>
 </html>
