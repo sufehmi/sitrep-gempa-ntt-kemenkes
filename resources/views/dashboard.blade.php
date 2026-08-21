@@ -99,7 +99,7 @@
         </h1>
         <div class="text-right text-sm">
           <div class="text-white/60 text-xs uppercase tracking-wider">Data termutakhir</div>
-          <div class="font-medium">20 Agustus 2026</div>
+          <div class="font-medium">21 Agustus 2026</div>
         </div>
       </div>
     </div>
@@ -374,9 +374,8 @@
   </main>
 
   <footer class="max-w-7xl mx-auto px-6 lg:px-8 py-8 text-center text-xs text-slate-500 space-y-1">
-    <p>Dashboard ini dikelola oleh <span class="font-semibold text-slate-700">Pokja RCCE</span> untuk bantu sesama.</p>
+    <p>Dashboard ini dikelola oleh <span class="font-semibold text-slate-700">Pokja RCCE dan Pusdatin Kemenkes</span> untuk bantu sesama.</p>
     <p>Informasi lengkap RCCE bisa dilihat melalui link berikut: <a href="https://rcce.id" target="_blank" rel="noopener" class="text-teal-900 font-semibold hover:underline">https://rcce.id</a></p>
-    <p class="text-slate-400 pt-2">© 2026 Sitrep NTT — Dashboard dibuat dengan Laravel + Tailwind CSS</p>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
