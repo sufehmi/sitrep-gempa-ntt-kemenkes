@@ -114,13 +114,13 @@ class InputDataController extends Controller
             'diagnosis' => 'nullable|string',
             'sumber_data' => 'nullable|string|max:255',
         ]);
+        // Fasyankes yang tidak kedatangan pasien baru boleh disimpan apa adanya
+        // (semua zona = 0). fix per 2026-08-22: input 0 sebelumnya ditolak oleh
+        // guard `if (... === 0)` yang sekarang dihapus.
         $merah = (int)($data['merah'] ?? 0);
         $kuning = (int)($data['kuning'] ?? 0);
         $hijau = (int)($data['hijau'] ?? 0);
         $hitam = (int)($data['hitam'] ?? 0);
-        if ($merah + $kuning + $hijau + $hitam === 0) {
-            return back()->withErrors(['merah' => 'Minimal salah satu kolom (Merah/Kuning/Hijau/Hitam) harus diisi.'])->withInput();
-        }
         $data['merah'] = $merah;
         $data['kuning'] = $kuning;
         $data['hijau'] = $hijau;
@@ -152,13 +152,13 @@ class InputDataController extends Controller
             'diagnosis' => 'nullable|string',
             'sumber_data' => 'nullable|string|max:255',
         ]);
+        // Fasyankes yang tidak kedatangan pasien baru boleh disimpan apa adanya
+        // (semua zona = 0). fix per 2026-08-22: input 0 sebelumnya ditolak oleh
+        // guard `if (... === 0)` yang sekarang dihapus.
         $merah = (int)($data['merah'] ?? 0);
         $kuning = (int)($data['kuning'] ?? 0);
         $hijau = (int)($data['hijau'] ?? 0);
         $hitam = (int)($data['hitam'] ?? 0);
-        if ($merah + $kuning + $hijau + $hitam === 0) {
-            return back()->withErrors(['merah' => 'Minimal salah satu kolom (Merah/Kuning/Hijau/Hitam) harus diisi.'])->withInput();
-        }
         $data['merah'] = $merah;
         $data['kuning'] = $kuning;
         $data['hijau'] = $hijau;
