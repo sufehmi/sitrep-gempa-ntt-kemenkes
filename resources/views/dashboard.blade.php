@@ -266,6 +266,7 @@
           </table>
         </div>
       </div>
+      <a href="#top" class="btn btn-ghost">↑ Kembali ke atas</a>
     </section>
 
     {{-- ============================================================ --}}
