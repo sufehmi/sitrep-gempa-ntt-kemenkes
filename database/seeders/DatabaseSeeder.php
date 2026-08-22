@@ -8,6 +8,7 @@ use App\Models\KondisiPasienPuskesmas;
 use App\Models\KondisiPasienRs;
 use App\Models\SituasiKesehatan;
 use App\Models\User;
+use App\Support\SitrepCredentials;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use OpenSpout\Common\Entity\Cell;
@@ -246,11 +247,13 @@ class DatabaseSeeder extends Seeder
     private function seedUser(): void
     {
         User::firstOrCreate(
-            ['username' => 'admin'],
+            ['username' => SitrepCredentials::defaultUsername()],
             [
                 'name' => 'Administrator',
                 'email' => 'admin@sitrep-ntt.local',
-                'password' => Hash::make('admin123'),
+                // fix 2026-08-22: ambil password dari password.ini (di-gitignore)
+                // supaya tidak ada plaintext credential di source code.
+                'password' => Hash::make(SitrepCredentials::defaultUserPassword()),
             ]
         );
     }

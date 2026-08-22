@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ApiKey;
 use App\Models\User;
+use App\Support\SitrepCredentials;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,8 +13,8 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    private const MANAGE_USER_SHA1 = '8e4b4051c65d8e56b261860e5af16e4b2b8f74b8';
-
+    // fix 2026-08-22: SHA1 hash gate dipindah ke password.ini (di-gitignore).
+    // Sumber: App\Support\SitrepCredentials::manageUserSha1()
     public function gate(): View
     {
         return view('input.users.gate');
@@ -28,7 +29,7 @@ class UserController extends Controller
         ]);
 
         $submitted = strtolower(trim($request->input('manage_password')));
-        if (!hash_equals(self::MANAGE_USER_SHA1, $submitted)) {
+        if (!hash_equals(SitrepCredentials::manageUserSha1(), $submitted)) {
             return back()->withErrors(['manage_password' => 'SHA1 hash tidak cocok.'])->withInput();
         }
         $request->session()->put('manage_user_unlocked', true);

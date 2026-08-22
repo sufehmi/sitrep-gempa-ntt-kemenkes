@@ -7,14 +7,17 @@ use App\Models\Kabupaten;
 use App\Models\KondisiPasienPuskesmas;
 use App\Models\KondisiPasienRs;
 use App\Models\SituasiKesehatan;
+use App\Support\SitrepCredentials;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class UpdateController extends Controller
 {
-    private const MANAGE_USER_SHA1 = '8e4b4051c65d8e56b261860e5af16e4b2b8f74b8';
-
+    // fix 2026-08-22: SHA1 hash gate dipindah ke password.ini (di-gitignore).
+    // Sumber: App\Support\SitrepCredentials::updateGateSha1() — saat ini
+    // nilainya sama dengan manage_user_sha1, tapi dipisah di password.ini
+    // supaya bisa di-rotate independen kalau perlu.
     private const TABLES = [
         'analisa'  => 'Analisa Ringkasan',
         'situasi'  => 'Situasi Kesehatan',
@@ -36,7 +39,7 @@ class UpdateController extends Controller
         ]);
 
         $submitted = strtolower(trim($request->input('manage_password')));
-        if (!hash_equals(self::MANAGE_USER_SHA1, $submitted)) {
+        if (!hash_equals(SitrepCredentials::updateGateSha1(), $submitted)) {
             return back()->withErrors(['manage_password' => 'SHA1 hash tidak cocok.'])->withInput();
         }
         $request->session()->put('update_unlocked', true);
