@@ -126,10 +126,22 @@ class InputDataController extends Controller
         $data['hijau'] = $hijau;
         $data['hitam'] = $hitam;
         $data['total_pasien'] = $merah + $kuning + $hijau + $hitam;
-        KondisiPasienRs::updateOrCreate(
-            ['nama_rs' => $data['nama_rs'], 'tanggal' => $data['tanggal']],
-            $data
-        );
+        // fix 2026-08-22: composite key HARUS ikut kabupaten_id supaya nama RS
+        // yang sama di kabupaten berbeda pada tanggal yang sama tidak saling
+        // menimpa (lihat juga migration 2026_08_22_090000).
+        try {
+            KondisiPasienRs::updateOrCreate(
+                ['nama_rs' => $data['nama_rs'], 'kabupaten_id' => $data['kabupaten_id'], 'tanggal' => $data['tanggal']],
+                $data
+            );
+        } catch (UniqueConstraintViolationException) {
+            // safety net utk race (dua request concurrent dgn key sama persis).
+            // lookup ulang dgn composite key yg lengkap lalu update.
+            KondisiPasienRs::where('nama_rs', $data['nama_rs'])
+                ->where('kabupaten_id', $data['kabupaten_id'])
+                ->whereDate('tanggal', $data['tanggal'])
+                ->update($data);
+        }
         return redirect()->route('input.index')->with('status', 'Data RS berhasil disimpan.');
     }
 
@@ -164,10 +176,21 @@ class InputDataController extends Controller
         $data['hijau'] = $hijau;
         $data['hitam'] = $hitam;
         $data['total_pasien'] = $merah + $kuning + $hijau + $hitam;
-        KondisiPasienPuskesmas::updateOrCreate(
-            ['nama_puskesmas' => $data['nama_puskesmas'], 'tanggal' => $data['tanggal']],
-            $data
-        );
+        // fix 2026-08-22: composite key HARUS ikut kabupaten_id supaya nama
+        // puskesmas yang sama di kabupaten berbeda pada tanggal yang sama
+        // tidak saling menimpa (lihat juga migration 2026_08_22_090000).
+        try {
+            KondisiPasienPuskesmas::updateOrCreate(
+                ['nama_puskesmas' => $data['nama_puskesmas'], 'kabupaten_id' => $data['kabupaten_id'], 'tanggal' => $data['tanggal']],
+                $data
+            );
+        } catch (UniqueConstraintViolationException) {
+            // safety net utk race (dua request concurrent dgn key sama persis).
+            KondisiPasienPuskesmas::where('nama_puskesmas', $data['nama_puskesmas'])
+                ->where('kabupaten_id', $data['kabupaten_id'])
+                ->whereDate('tanggal', $data['tanggal'])
+                ->update($data);
+        }
         return redirect()->route('input.index')->with('status', 'Data puskesmas berhasil disimpan.');
     }
 
