@@ -41,6 +41,21 @@
     .tab-scroll::-webkit-scrollbar { height: 4px; }
     .tab-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
 
+    /* Mobile: tab nav wrap ke 2+ baris supaya semua tab terlihat tanpa
+       horizontal scroll. Aktif hanya di layar kecil (<640px). Di desktop
+       tetap horizontal scroll (yang lama) supaya tidak makan vertikal. */
+    @media (max-width: 639px) {
+      .tab-scroll {
+        overflow-x: visible;
+        flex-wrap: wrap;
+      }
+      .tab-pill {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+      }
+      .section-anchor { scroll-margin-top: 240px; }
+    }
+
     /* Tables */
     table { border-collapse: collapse; width: 100%; }
     th, td { padding: 0.625rem 0.75rem; text-align: left; font-size: 0.875rem; }
@@ -104,7 +119,7 @@
       </div>
     </div>
     <nav class="max-w-7xl mx-auto px-6 lg:px-8 pb-4">
-      <ul class="tab-scroll flex items-center gap-1.5 min-w-min">
+      <ul class="tab-scroll flex items-center gap-1.5">
         <li><a class="tab-pill active" href="#analisa-tabel">Analisa Harian</a></li>
         <li><a class="tab-pill" href="#situasi">Situasi Kesehatan</a></li>
         <li><a class="tab-pill" href="#pasien-rs">Pasien di Rumah Sakit</a></li>
