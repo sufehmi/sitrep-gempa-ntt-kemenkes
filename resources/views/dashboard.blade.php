@@ -105,7 +105,7 @@
     </div>
     <nav class="max-w-7xl mx-auto px-6 lg:px-8 pb-4">
       <ul class="tab-scroll flex items-center gap-1.5 min-w-min">
-        <li><a class="tab-pill active" href="#analisa">Analisa Harian</a></li>
+        <li><a class="tab-pill active" href="#analisa-tabel">Analisa Harian</a></li>
         <li><a class="tab-pill" href="#situasi">Situasi Kesehatan</a></li>
         <li><a class="tab-pill" href="#pasien-rs">Pasien di Rumah Sakit</a></li>
         <li><a class="tab-pill" href="#pasien-puskesmas">Pasien di Puskesmas</a></li>
@@ -383,7 +383,7 @@
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     // Highlight active tab on scroll
-    const sections = ['analisa','situasi','pasien-rs','pasien-puskesmas','data-studio','linktree'];
+    const sections = ['analisa-tabel','situasi','pasien-rs','pasien-puskesmas','data-studio','linktree'];
     document.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(id => {
