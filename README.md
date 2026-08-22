@@ -69,8 +69,6 @@ php artisan serve
 
 > File `password.ini` di-gitignore. Untuk dapat nilai, ambil langsung dari
 > server (`/home/rcce/<env>/password.ini`) atau dari catatan internal tim.
-> Hash SHA1 sudah terlanjur ter-expose di git history sebelumnya dan **tidak
-> di-rotate** — tujuannya hanya agar tidak muncul di working copy README.
 
 ## Project Structure
 
