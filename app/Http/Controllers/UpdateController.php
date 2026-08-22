@@ -111,6 +111,56 @@ class UpdateController extends Controller
         return redirect()->route('update.index')->with('status', 'Data berhasil dihapus.');
     }
 
+    /**
+     * Bulk delete (soft-delete) — hapus banyak baris sekaligus via checkbox.
+     *
+     * Request body:
+     *   - table:  'analisa'|'situasi'|'rs'|'puskesmas'
+     *   - ids:    array<int>  (min 1, max 500)
+     *
+     * Karena model sudah pakai SoftDeletes trait, ini cuma flag `deleted_at`
+     * — row tetap ada di DB dan bisa di-restore manual kalau perlu.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        if (!$request->session()->get('update_unlocked')) {
+            return redirect()->route('update.gate');
+        }
+
+        $data = $request->validate([
+            'table' => ['required', 'string', Rule::in(array_keys(self::TABLES))],
+            'ids'   => ['required', 'array', 'min:1', 'max:500'],
+            'ids.*' => ['integer', 'min:1'],
+        ], [
+            'table.in' => 'Tabel tidak dikenal.',
+            'ids.required' => 'Pilih minimal 1 baris untuk dihapus.',
+            'ids.max' => 'Maksimal 500 baris per aksi. Pecah menjadi beberapa aksi kalau lebih.',
+        ]);
+
+        $model = match ($data['table']) {
+            'analisa'   => AnalisaRingkasan::class,
+            'situasi'   => SituasiKesehatan::class,
+            'rs'        => KondisiPasienRs::class,
+            'puskesmas' => KondisiPasienPuskesmas::class,
+            default     => abort(404),
+        };
+
+        $deleted = $model::whereIn('id', $data['ids'])->delete();
+
+        // Audit log ke laravel.log untuk forensik.
+        \Illuminate\Support\Facades\Log::info('bulk-delete', [
+            'table'   => $data['table'],
+            'ids'     => $data['ids'],
+            'count'   => $deleted,
+            'session' => substr((string) $request->session()->getId(), 0, 8),
+            'ip'      => $request->ip(),
+        ]);
+
+        $label = self::TABLES[$data['table']];
+        return redirect()->route('update.index')
+            ->with('status', "Berhasil hapus {$deleted} baris data {$label}.");
+    }
+
     public function lock(Request $request)
     {
         $request->session()->forget('update_unlocked');

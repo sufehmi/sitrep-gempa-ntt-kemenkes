@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KondisiPasienRs extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'kondisi_pasien_rs';
     protected $fillable = [
         'kabupaten_id', 'nama_rs', 'tanggal', 'merah', 'kuning',

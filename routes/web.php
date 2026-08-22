@@ -28,6 +28,7 @@ Route::prefix('update')->name('update.')->group(function () {
         Route::get('/{table}/{id}/edit', [UpdateController::class, 'edit'])->name('edit');
         Route::put('/{table}/{id}', [UpdateController::class, 'update'])->name('update');
         Route::delete('/{table}/{id}', [UpdateController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-destroy', [UpdateController::class, 'bulkDestroy'])->name('bulk-destroy');
     });
 });
 
