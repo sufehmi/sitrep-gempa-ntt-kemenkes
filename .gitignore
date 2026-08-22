@@ -33,3 +33,8 @@ Thumbs.db
 
 # Local test artifacts
 public/storage
+
+# Local credential vault — JANGAN commit/push. README merefer ke sini.
+# Berisi default seeder password + SHA1 hash untuk gate.
+# Lihat README "Default login" dan "SHA1 gates".
+/password.ini

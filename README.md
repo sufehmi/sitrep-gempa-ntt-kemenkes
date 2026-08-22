@@ -59,13 +59,18 @@ php artisan serve
 # → http://127.0.0.1:8000
 ```
 
-**Default login** (set via seeder):
+**Default login** (set via seeder, lihat `password.ini` lokal untuk nilai):
 - Username: `admin`
-- Password: `admin123`
+- Password: lihat `password.ini` → `[default_user] password` (file di-gitignore, **tidak ada di repo**)
 
-**SHA1 gates:**
-- `Manage User` page: SHA1(`8e4b4051c65d8e56b261860e5af16e4b2b8f74b8`)
-- `/update` (edit/hapus data): SHA1 sama
+**SHA1 gates** (lihat `password.ini` lokal untuk nilai):
+- `Manage User` page: lihat `password.ini` → `[sha1_gates] manage_user_sha1`
+- `/update` (edit/hapus data): SHA1 sama (lihat `password.ini` → `[sha1_gates] update_gate_sha1`)
+
+> File `password.ini` di-gitignore. Untuk dapat nilai, ambil langsung dari
+> server (`/home/rcce/<env>/password.ini`) atau dari catatan internal tim.
+> Hash SHA1 sudah terlanjur ter-expose di git history sebelumnya dan **tidak
+> di-rotate** — tujuannya hanya agar tidak muncul di working copy README.
 
 ## Project Structure
 
