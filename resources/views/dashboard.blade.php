@@ -124,6 +124,7 @@
         <li><a class="tab-pill" href="#situasi">Situasi Kesehatan</a></li>
         <li><a class="tab-pill" href="#pasien-rs">Pasien di Rumah Sakit</a></li>
         <li><a class="tab-pill" href="#pasien-puskesmas">Pasien di Puskesmas</a></li>
+        <li><a class="tab-pill" href="#klb">Penyakit Potensial KLB</a></li>
         <li><a class="tab-pill" href="#data-studio">Tim Pendukung Kesehatan</a></li>
         <li><a class="tab-pill" href="#linktree">Informasi lainnya</a></li>
       </ul>
@@ -329,7 +330,37 @@
     </section>
 
     {{-- ============================================================ --}}
-    {{-- TAB 4: Tim Pendukung Kesehatan (Google Data Studio)          --}}
+    {{-- TAB 4: Penyakit Potensial KLB (Google Data Studio)           --}}
+    {{-- ============================================================ --}}
+    <section id="klb" class="section-anchor">
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-mint-200 flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-slate-800">Pemantauan Penyakit Potensial KLB Gempa Bumi, Nusa Tenggara Timur</h3>
+          <a href="https://datastudio.google.com/u/0/reporting/541be3b0-2553-46d6-ac23-09a504c498cd/page/V756F" target="_blank" rel="noopener" class="text-sm text-teal-900 hover:underline">Buka di Tab Baru ↗</a>
+        </div>
+        <div class="p-6">
+          <div tabindex="-1" class="relative w-full overflow-hidden rounded-lg bg-mint-50" style="aspect-ratio: 800 / 600;">
+            <iframe
+              width="800"
+              height="600"
+              src="https://datastudio.google.com/embed/reporting/541be3b0-2553-46d6-ac23-09a504c498cd/page/V756F"
+              frameborder="0"
+              style="border:0"
+              allowfullscreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+              title="Pemantauan Penyakit Potensial KLB Gempa Bumi, Nusa Tenggara Timur"
+              loading="lazy"
+              importance="low"
+              tabindex="-1"
+              class="absolute inset-0 w-full h-full"></iframe>
+          </div>
+        </div>
+      </div>
+      <a href="#top" class="btn btn-ghost mt-4">↑ Kembali ke atas</a>
+    </section>
+
+    {{-- ============================================================ --}}
+    {{-- TAB 5: Tim Pendukung Kesehatan (Google Data Studio)          --}}
     {{-- ============================================================ --}}
     <section id="data-studio" class="section-anchor">
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -338,14 +369,17 @@
           <a href="https://datastudio.google.com/u/0/reporting/35badcdd-7dd0-4208-9bc5-573007f8b8eb/page/Rkk6F" target="_blank" rel="noopener" class="text-sm text-teal-900 hover:underline">Buka di Tab Baru ↗</a>
         </div>
         <div class="p-6">
-          <div class="relative w-full overflow-hidden rounded-lg bg-mint-50" style="aspect-ratio: 600 / 443;">
+          <div tabindex="-1" class="relative w-full overflow-hidden rounded-lg bg-mint-50" style="aspect-ratio: 600 / 443;">
             <iframe
               src="https://datastudio.google.com/embed/reporting/35badcdd-7dd0-4208-9bc5-573007f8b8eb/page/Rkk6F"
               class="absolute inset-0 w-full h-full"
               style="border:0;"
               allowfullscreen
               sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-              title="Tim Pendukung Kesehatan"></iframe>
+              title="Tim Pendukung Kesehatan"
+              loading="lazy"
+              importance="low"
+              tabindex="-1"></iframe>
           </div>
         </div>
       </div>
@@ -397,18 +431,134 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    // Highlight active tab on scroll
-    const sections = ['analisa-tabel','situasi','pasien-rs','pasien-puskesmas','data-studio','linktree'];
-    document.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 220) current = id;
+    // ===== Tab nav: click handler with permanent scroll-lock + simple scrollspy =====
+    const sections = ['analisa-tabel','situasi','pasien-rs','pasien-puskesmas','klb','data-studio','linktree'];
+
+    // Track last user-initiated scroll position. This is the "anchor" position
+    // the user wants to be at — anything that moves scrollY away from this is
+    // iframe-induced scroll-back (or our own explicit scroll), and we snap back.
+    let userAnchorY = 0;
+    let lastUserInputTime = 0;
+
+    // Detect ANY user-initiated input event so we know the current scrollY is user-driven.
+    function noteUserInput() {
+      lastUserInputTime = Date.now();
+    }
+    window.addEventListener('wheel', noteUserInput, { passive: true });
+    window.addEventListener('touchmove', noteUserInput, { passive: true });
+    window.addEventListener('touchstart', noteUserInput, { passive: true });
+    window.addEventListener('mousedown', noteUserInput, { passive: true });
+    window.addEventListener('pointerdown', noteUserInput, { passive: true });
+    window.addEventListener('keydown', noteUserInput, { passive: true });
+    window.addEventListener('scroll', () => {
+      // If a scroll happens within 200ms of user input, treat it as user-driven
+      // and update the anchor. Otherwise it's iframe-induced and we snap back.
+      if (Date.now() - lastUserInputTime < 200) {
+        userAnchorY = window.scrollY;
+      }
+    }, { passive: true });
+
+    // Iframe-induced scroll-back detector. Every 200ms, check if scrollY differs
+    // significantly from where the user actually is. If we recently had user input
+    // AND scrollY matches the new position, the user moved there. If we recently
+    // had user input but scrollY differs, that's iframe-induced and we snap back.
+    // If we have NOT had user input recently, any non-zero scrollY is suspicious.
+    setInterval(() => {
+      const timeSinceInput = Date.now() - lastUserInputTime;
+      const diff = Math.abs(window.scrollY - userAnchorY);
+      if (diff < 5) return; // close enough to anchor, no action needed
+      // No recent input → if scrollY differs from anchor, snap back (iframe-induced)
+      // OR if userAnchorY is 0 and scrollY is non-zero, snap to 0
+      if (timeSinceInput > 200 || (userAnchorY === 0 && window.scrollY > 100)) {
+        window.scrollTo({ top: userAnchorY, behavior: 'instant' });
+      }
+    }, 200);
+
+    // Iframe load listener: when an iframe finishes loading, blur it immediately
+    // so it doesn't steal focus and trigger parent scroll-into-view.
+    document.querySelectorAll('iframe').forEach(fr => {
+      fr.addEventListener('load', () => {
+        try { fr.blur(); } catch (_) {}
+        try { fr.setAttribute('tabindex', '-1'); } catch (_) {}
+        // Force the document.activeElement back to body so the iframe doesn't keep focus
+        try { document.body.focus(); } catch (_) {}
+      }, { capture: true, passive: true });
+      // Also intercept any focus events on the iframe
+      fr.addEventListener('focus', (e) => {
+        try { fr.blur(); } catch (_) {}
+        try { document.body.focus(); } catch (_) {}
+      }, { capture: true });
+    });
+
+    // Click handler with multiple interception points to prevent any browser
+    // default scroll behavior from interfering with our explicit scrollIntoView.
+    document.querySelectorAll('a.tab-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        const href = pill.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+        const target = document.getElementById(href.slice(1));
+        if (!target) return;
+        e.preventDefault();
+        // Optimistic active state immediately
+        document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        // Update URL hash so the back/forward + share link reflects the current tab
+        try { history.replaceState(null, '', href); } catch (_) {}
+        // Disable smooth-scroll permanently (only once)
+        if (!document.getElementById('disable-smooth-scroll')) {
+          const styleEl = document.createElement('style');
+          styleEl.id = 'disable-smooth-scroll';
+          styleEl.textContent = 'html, body { scroll-behavior: auto !important; }';
+          document.head.appendChild(styleEl);
+        }
+        // Scroll to target
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        // Update user anchor so iframe-induced scroll-back snaps to this position
+        userAnchorY = window.scrollY;
+        lastUserInputTime = Date.now(); // treat this as user-driven
       });
+    });
+
+    // "Kembali ke atas" anchor links: handle explicitly so the scroll-anchor
+    // detector doesn't snap them back to the previously-clicked tab.
+    document.querySelectorAll('a[href="#top"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Disable smooth-scroll (in case not yet injected)
+        if (!document.getElementById('disable-smooth-scroll')) {
+          const styleEl = document.createElement('style');
+          styleEl.id = 'disable-smooth-scroll';
+          styleEl.textContent = 'html, body { scroll-behavior: auto !important; }';
+          document.head.appendChild(styleEl);
+        }
+        // Scroll to top instantly and update anchor
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        userAnchorY = 0;
+        lastUserInputTime = Date.now();
+        // Clear active tab pill
+        document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active'));
+        // Update URL — remove the hash so it doesn't show a stale anchor
+        try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (_) {}
+      });
+    });
+
+    // Simple scrollspy via scroll event. Active section = last one whose top has
+    // crossed the 220px line below the viewport top.
+    function updateActive() {
+      const probe = 220;
+      let current = sections[0];
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top - probe <= 0) current = id;
+      }
       document.querySelectorAll('.tab-pill').forEach(p => {
         p.classList.toggle('active', p.getAttribute('href') === '#' + current);
       });
-    });
+    }
+    window.addEventListener('scroll', updateActive, { passive: true });
+    window.addEventListener('resize', updateActive);
+    updateActive();
   </script>
 
   <script>
