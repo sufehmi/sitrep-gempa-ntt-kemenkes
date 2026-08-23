@@ -114,7 +114,7 @@
         </h1>
         <div class="text-right text-sm">
           <div class="text-white/60 text-xs uppercase tracking-wider">Data termutakhir</div>
-          <div class="font-medium">22 Agustus 2026</div>
+          <div class="font-medium">23 Agustus 2026</div>
         </div>
       </div>
     </div>
